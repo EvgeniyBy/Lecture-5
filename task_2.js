@@ -50,9 +50,8 @@ class Car {
     }
 
     set yearOfManufacturing(val) {
-        let res = parseInt(val);
-        if (isFinite(res) && 1900 <= res && res <= new Date().getFullYear()) {
-            this.#yearOfManufacturing = res;
+        if (checkNumber(val) && 1900 <= val && val <= new Date().getFullYear()) {
+            this.#yearOfManufacturing = val;
         } else {
             throw 'Неверный год';
         }
@@ -63,9 +62,8 @@ class Car {
     }
 
     set maxSpeed(val) {
-        let res = parseInt(val);
-        if (isFinite(res) && 100 <= res && res <= 300) {
-            this.#maxSpeed = res;
+        if (checkNumber(val) && 100 <= val && val <= 300) {
+            this.#maxSpeed = val;
         } else {
             throw 'Неверная скорость';
         }
@@ -76,9 +74,8 @@ class Car {
     }
 
     set maxFuelVolume(val) {
-        let res = parseInt(val);
-        if (isFinite(res) && 10 <= res && res <= 50) {
-            this.#maxFuelVolume = res;
+        if (checkNumber(val) && 10 <= val && val <= 50) {
+            this.#maxFuelVolume = val;
         } else {
             throw 'Неверный литраж';
         }
@@ -89,9 +86,8 @@ class Car {
     }
 
     set fuelConsumption(val) {
-        let res = parseFloat(val);
-        if (isFinite(res)) {
-            this.#fuelConsumption = res;
+        if (checkNumber(val)) {
+            this.#fuelConsumption = val;
         } else {
             throw 'Неверный расход';
         }
@@ -128,9 +124,8 @@ class Car {
     }
 
     fillUpGasTank(gas) {
-        if (!isFinite(gas)) throw 'Неверное количество топлива для заправки';
-        if (gas <= 0) throw 'Неверное количество топлива для заправки';
-        if ((gas + this.#currentFuelVolume) > this.maxFuelVolume) {
+        if (!isFinite(gas) && (gas <= 0)) throw 'Неверное количество топлива для заправки';
+        if ((gas + this.#currentFuelVolume) > this.#maxFuelVolume) {
             throw 'Топливный бак переполнен';
         }
         this.#currentFuelVolume += gas;
@@ -138,15 +133,21 @@ class Car {
 
     drive(speed, hour) {
         if (!this.#isStarted) throw 'Машина должна быть заведена, чтобы ехать';
-        if (!isFinite(speed) || speed <= 0) throw 'Неверная скорость';
-        if (!isFinite(hour) || hour <= 0) throw 'Неверное количество часов';
+        if (!checkNumber(speed) || speed <= 0) throw 'Неверная скорость';
+        if (!checkNumber(hour) || hour <= 0) throw 'Неверное количество часов';
         if (speed > this.maxSpeed) throw 'Машина не может ехать так быстро';
         let tempMileage = speed * hour;
-        let tempFuelConsumption = tempMileage / 100 * this.fuelConsumption;
+        let tempFuelConsumption = tempMileage / 100 * this.#fuelConsumption;
         if (tempFuelConsumption > this.#currentFuelVolume) {
             throw 'Недостаточно топлива';
         }
         this.#currentFuelVolume -= tempFuelConsumption;
         this.#mileage += tempMileage;
     }
+}
+function checkNumber(val){
+    if (!isFinite(val) || typeof val != 'number' || isNaN(val)){
+        return false;
+    }
+    return true;
 }
