@@ -1,6 +1,6 @@
 function multiply(operand_1, operand_2) {
     if (!isFinite(operand_1) || !isFinite(operand_2)) {
-        return false;
+        return null;
     }
     return operand_1 * operand_2;
 }
